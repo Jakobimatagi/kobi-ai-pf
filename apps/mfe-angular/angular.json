@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "mfe-wordle": {
+    "mfe-angular": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -20,10 +20,10 @@
           },
           "configurations": {
             "production": {
-              "target": "mfe-wordle:esbuild:production"
+              "target": "mfe-angular:esbuild:production"
             },
             "development": {
-              "target": "mfe-wordle:esbuild:development",
+              "target": "mfe-angular:esbuild:development",
               "dev": true
             }
           },
@@ -32,7 +32,7 @@
         "serve": {
           "builder": "@angular-architects/native-federation:build",
           "options": {
-            "target": "mfe-wordle:serve-original:development",
+            "target": "mfe-angular:serve-original:development",
             "rebuildDelay": 500,
             "cacheExternalArtifacts": true,
             "dev": true,
@@ -85,10 +85,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "mfe-wordle:esbuild:production"
+              "buildTarget": "mfe-angular:esbuild:production"
             },
             "development": {
-              "buildTarget": "mfe-wordle:esbuild:development"
+              "buildTarget": "mfe-angular:esbuild:development"
             }
           },
           "defaultConfiguration": "development",

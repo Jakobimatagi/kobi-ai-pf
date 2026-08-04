@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import cssInjected from 'vite-plugin-css-injected-by-js';
 import { federation } from '@module-federation/vite';
 
-// React "Weather" micro-frontend — exposed as a Module Federation remote.
-// Dev/standalone: http://localhost:5001
+// React micro-frontend — a mini-app (its own router + many components),
+// exposed as a Module Federation remote. Dev/standalone: http://localhost:5001
 export default defineConfig({
   plugins: [
     react(),
@@ -14,10 +14,10 @@ export default defineConfig({
     // host's <head> when this remote is mounted via Module Federation.
     cssInjected(),
     federation({
-      name: 'mfe_weather',
+      name: 'mfe_react',
       filename: 'remoteEntry.js',
       exposes: {
-        './WeatherApp': './src/mount.tsx',
+        './App': './src/mount.tsx',
       },
       dts: false,
       shared: {

@@ -3,20 +3,20 @@ import { RouterLink } from 'vue-router';
 
 const cards = [
   {
-    to: '/weather',
-    title: 'Weather Forecast',
+    to: '/react',
+    title: 'React MFE',
     framework: 'React',
     tone: 'sky',
-    desc: 'Live 7-day forecast from the Open-Meteo API. Built with React 19 + MUI, loaded into this Vue shell over Module Federation.',
-    emoji: '⛅',
+    desc: 'A React 19 + MUI app hosting multiple components (starting with a live weather forecast), loaded into this Vue shell over Module Federation.',
+    emoji: '⚛️',
   },
   {
-    to: '/wordle',
-    title: 'Daily Wordle',
+    to: '/angular',
+    title: 'Angular MFE',
     framework: 'Angular',
     tone: 'rose',
-    desc: 'Guess the word of the day, served deterministically from a Supabase edge function. Built with Angular 22 + Angular Material.',
-    emoji: '🟩',
+    desc: 'An Angular 22 + Angular Material app hosting multiple components (starting with a daily Wordle backed by Supabase), embedded via iframe.',
+    emoji: '🅰️',
   },
 ];
 </script>

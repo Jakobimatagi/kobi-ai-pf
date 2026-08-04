@@ -10,13 +10,15 @@ host** and the app users actually load. Part of the [kobi-ai-pf](../../README.md
 ## What it does
 
 - Renders the nav, home page, and layout.
-- **`/weather`** — lazy-loads the React weather remote over **Module Federation** and
-  mounts it inline into the shell's DOM ([`RemoteMount.vue`](src/components/RemoteMount.vue)).
-- **`/wordle`** — embeds the Angular remote via **iframe** ([`WordleView.vue`](src/views/WordleView.vue))
-  for full runtime/style isolation.
+- **`/react`** — lazy-loads the whole React MFE over **Module Federation** and mounts it
+  inline into the shell's DOM ([`ReactView.vue`](src/views/ReactView.vue) via
+  [`RemoteMount.vue`](src/components/RemoteMount.vue)). The React app handles its own
+  internal navigation.
+- **`/angular`** — embeds the whole Angular MFE via **iframe**
+  ([`AngularView.vue`](src/views/AngularView.vue)) for full runtime/style isolation.
 
-Both remotes expose a framework-agnostic `mount(el)` contract; the shell only ever hands
-over a DOM node.
+The React MFE exposes a framework-agnostic `mount(el)` contract; the shell only ever hands
+over a DOM node. The Angular MFE is loaded by URL.
 
 ## Remote wiring
 
@@ -24,8 +26,8 @@ Remote URLs are environment-driven (see [.env.example](.env.example)):
 
 | Variable | Purpose | Default (prod) |
 | --- | --- | --- |
-| `VITE_WEATHER_REMOTE_URL` | React remote `remoteEntry.js` (build-time, in [vite.config.ts](vite.config.ts)) | `https://kobi-ai-pf-weather.vercel.app/remoteEntry.js` |
-| `VITE_WORDLE_URL` | Angular iframe origin (runtime, in [src/mfe/config.ts](src/mfe/config.ts)) | `https://kobi-ai-pf-wordle.vercel.app` |
+| `VITE_REACT_REMOTE_URL` | React MFE `remoteEntry.js` (build-time, in [vite.config.ts](vite.config.ts)) | `https://kobi-ai-pf-react.vercel.app/remoteEntry.js` |
+| `VITE_ANGULAR_URL` | Angular MFE iframe origin (runtime, in [src/mfe/config.ts](src/mfe/config.ts)) | `https://kobi-ai-pf-angular.vercel.app` |
 
 In dev both default to `localhost:5001` / `localhost:5002`.
 
@@ -37,7 +39,7 @@ pnpm --filter @kobi/shell dev      # this app only → :5000
 pnpm dev
 ```
 
-Loading `/weather` requires the weather remote to be reachable (run `pnpm dev` at the root,
+Loading `/react` requires the React MFE to be reachable (run `pnpm dev` at the root,
 which serves it a built artifact on :5001).
 
 ## Build & deploy

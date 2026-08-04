@@ -8,12 +8,12 @@
     "node": ">=20.10.0"
   },
   "scripts": {
-    "dev": "concurrently -n shell,weather,wordle -c blue,cyan,magenta \"pnpm dev:shell\" \"pnpm serve:weather\" \"pnpm dev:wordle\"",
+    "dev": "concurrently -n shell,react,angular -c blue,cyan,magenta \"pnpm dev:shell\" \"pnpm serve:react\" \"pnpm dev:angular\"",
     "build": "pnpm -r run build",
     "dev:shell": "pnpm --filter @kobi/shell run dev",
-    "dev:weather": "pnpm --filter @kobi/mfe-weather run dev",
-    "serve:weather": "pnpm --filter @kobi/mfe-weather run mf:serve",
-    "dev:wordle": "pnpm --filter @kobi/mfe-wordle run start"
+    "dev:react": "pnpm --filter @kobi/mfe-react run dev",
+    "serve:react": "pnpm --filter @kobi/mfe-react run mf:serve",
+    "dev:angular": "pnpm --filter @kobi/mfe-angular run start"
   },
   "devDependencies": {
     "concurrently": "^10.0.4"

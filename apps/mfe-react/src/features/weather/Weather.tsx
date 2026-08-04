@@ -6,27 +6,14 @@ import {
   CardContent,
   Chip,
   CircularProgress,
-  CssBaseline,
   Stack,
   TextField,
-  ThemeProvider,
-  createTheme,
 } from '@mui/material';
 import AirIcon from '@mui/icons-material/Air';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import { geocode, getForecast, type Forecast, type GeoResult } from './api';
 import { weatherMeta } from './wmo';
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: { main: '#2563eb' },
-    background: { default: 'transparent' },
-  },
-  shape: { borderRadius: 16 },
-  typography: { fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif' },
-});
 
 const QUICK_CITIES = ['London', 'Tokyo', 'New York', 'Cape Town', 'Sydney'];
 
@@ -35,7 +22,7 @@ function dayName(date: string, index: number): string {
   return new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' });
 }
 
-export default function WeatherApp() {
+export default function Weather() {
   const [query, setQuery] = useState('');
   const [options, setOptions] = useState<GeoResult[]>([]);
   const [forecast, setForecast] = useState<Forecast | null>(null);
@@ -89,15 +76,13 @@ export default function WeatherApp() {
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline enableColorScheme={false} />
-      <div className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-slate-800">Weather Forecast</h2>
-          <p className="text-sm text-slate-500">
-            Live data from Open-Meteo · React micro-frontend
-          </p>
-        </div>
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-slate-800">Weather Forecast</h2>
+        <p className="text-sm text-slate-500">
+          Live 7-day forecast from the Open-Meteo API
+        </p>
+      </div>
 
         <Autocomplete<GeoResult, false, false, true>
           freeSolo
@@ -216,7 +201,6 @@ export default function WeatherApp() {
             </div>
           </div>
         )}
-      </div>
-    </ThemeProvider>
+    </div>
   );
 }

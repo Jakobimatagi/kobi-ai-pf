@@ -1,6 +1,6 @@
 // Type shims for Module Federation remote modules.
-// Each exposed remote conforms to the framework-agnostic mount contract.
-declare module 'mfe_weather/WeatherApp' {
+// Each MFE exposes a framework-agnostic mount contract for its whole app.
+declare module 'mfe_react/App' {
   export type MountFn = (el: HTMLElement) => () => void;
   export const mount: MountFn;
   export function unmount(el: HTMLElement): void;

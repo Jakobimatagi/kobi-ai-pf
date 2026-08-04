@@ -4,28 +4,28 @@ This monorepo deploys as **three separate Vercel projects** (one per app), all p
 the same GitHub repo with different **Root Directories**. Each app has its own
 [`vercel.json`](apps/shell/vercel.json) with build config, headers, and rewrites.
 
-Deploy the **remotes first** (weather + wordle), then the **shell** last, because the
+Deploy the **remotes first** (React + Angular MFEs), then the **shell** last, because the
 shell needs the remotes' production URLs.
 
 ## Recommended: Git-connected projects (continuous deployment)
 
 For each app, create a Vercel project from the same repo:
 
-### 1. Weather remote (React)
+### 1. React MFE
 
 - **Import** `Jakobimatagi/kobi-ai-pf` in the Vercel dashboard → **Add New… → Project**.
-- **Project Name:** `kobi-ai-pf-weather`
-- **Root Directory:** `apps/mfe-weather`
-- Framework / build / output are read from `apps/mfe-weather/vercel.json` (Vite → `dist`).
-- Deploy. Note the production URL, e.g. `https://kobi-ai-pf-weather.vercel.app`.
+- **Project Name:** `kobi-ai-pf-react`
+- **Root Directory:** `apps/mfe-react`
+- Framework / build / output are read from `apps/mfe-react/vercel.json` (Vite → `dist`).
+- Deploy. Note the production URL, e.g. `https://kobi-ai-pf-react.vercel.app`.
 
-### 2. Wordle remote (Angular)
+### 2. Angular MFE
 
 - **Add New… → Project**, same repo.
-- **Project Name:** `kobi-ai-pf-wordle`
-- **Root Directory:** `apps/mfe-wordle`
-- Config from `apps/mfe-wordle/vercel.json` (Angular → `dist/mfe-wordle/browser`).
-- Deploy. Note the URL, e.g. `https://kobi-ai-pf-wordle.vercel.app`.
+- **Project Name:** `kobi-ai-pf-angular`
+- **Root Directory:** `apps/mfe-angular`
+- Config from `apps/mfe-angular/vercel.json` (Angular → `dist/mfe-angular/browser`).
+- Deploy. Note the URL, e.g. `https://kobi-ai-pf-angular.vercel.app`.
 
 ### 3. Shell (Vue host)
 
@@ -35,8 +35,8 @@ For each app, create a Vercel project from the same repo:
 - **Environment Variables** (Production + Preview) — set these to the URLs from steps 1 & 2:
   | Name | Value |
   | --- | --- |
-  | `VITE_WEATHER_REMOTE_URL` | `https://kobi-ai-pf-weather.vercel.app/remoteEntry.js` |
-  | `VITE_WORDLE_URL` | `https://kobi-ai-pf-wordle.vercel.app` |
+  | `VITE_REACT_REMOTE_URL` | `https://kobi-ai-pf-react.vercel.app/remoteEntry.js` |
+  | `VITE_ANGULAR_URL` | `https://kobi-ai-pf-angular.vercel.app` |
 - Deploy. This is the public portfolio URL.
 
 > The shell already ships with those exact URLs as **defaults** (see
@@ -52,26 +52,26 @@ After this, every push to `main` auto-deploys all three.
 npm i -g vercel@latest
 vercel login
 
-# Weather remote
-vercel --cwd apps/mfe-weather --prod
+# React MFE
+vercel --cwd apps/mfe-react --prod
 
-# Wordle remote
-vercel --cwd apps/mfe-wordle --prod
+# Angular MFE
+vercel --cwd apps/mfe-angular --prod
 
 # Shell — pass the remote URLs from the two deploys above
 vercel --cwd apps/shell --prod \
-  -e VITE_WEATHER_REMOTE_URL=https://kobi-ai-pf-weather.vercel.app/remoteEntry.js \
-  -e VITE_WORDLE_URL=https://kobi-ai-pf-wordle.vercel.app
+  -e VITE_REACT_REMOTE_URL=https://kobi-ai-pf-react.vercel.app/remoteEntry.js \
+  -e VITE_ANGULAR_URL=https://kobi-ai-pf-angular.vercel.app
 ```
 
 ## How the cross-app wiring works in production
 
-- **Weather (Module Federation):** the shell imports the weather remote's `remoteEntry.js`
-  cross-origin. That requires CORS — `apps/mfe-weather/vercel.json` sets
+- **React MFE (Module Federation):** the shell imports the React remote's `remoteEntry.js`
+  cross-origin. That requires CORS — `apps/mfe-react/vercel.json` sets
   `Access-Control-Allow-Origin: *` on all responses so the import (and its chunk imports)
   succeed from the shell's origin.
-- **Wordle (iframe):** the shell embeds the Angular app by URL. No CORS needed — it's a
-  full document load. The Wordle app talks to Supabase directly (that edge function is
+- **Angular MFE (iframe):** the shell embeds the Angular app by URL. No CORS needed — it's
+  a full document load. The Angular app talks to Supabase directly (that edge function is
   already CORS-enabled).
 
 ## Notes

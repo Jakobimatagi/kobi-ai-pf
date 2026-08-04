@@ -3,8 +3,8 @@ import { RouterLink, RouterView } from 'vue-router';
 
 const links = [
   { to: '/', label: 'Home' },
-  { to: '/weather', label: 'Weather' },
-  { to: '/wordle', label: 'Wordle' },
+  { to: '/react', label: 'React' },
+  { to: '/angular', label: 'Angular' },
 ];
 </script>
 

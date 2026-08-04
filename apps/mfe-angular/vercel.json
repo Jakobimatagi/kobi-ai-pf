@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "angular",
   "buildCommand": "pnpm run build",
-  "outputDirectory": "dist/mfe-wordle/browser",
+  "outputDirectory": "dist/mfe-angular/browser",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@kobi/mfe-weather",
+  "name": "@kobi/mfe-react",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,7 +16,8 @@
     "@mui/icons-material": "^9.2.0",
     "@mui/material": "^9.2.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@module-federation/vite": "^1.20.1",

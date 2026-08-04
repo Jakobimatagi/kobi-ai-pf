@@ -1,7 +1,7 @@
 import { withNativeFederation, shareAll } from '@angular-architects/native-federation/config';
 
 export default withNativeFederation({
-  name: 'mfe-wordle',
+  name: 'mfe-angular',
 
   exposes: {
     './mount': './src/mount.ts',

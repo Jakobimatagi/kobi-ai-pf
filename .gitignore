@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 # Supabase local
 supabase/.temp/
+
+# Module Federation local diagnostics
+.mf/
+apps/*/.mf/

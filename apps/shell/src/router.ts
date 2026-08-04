@@ -6,14 +6,14 @@ export const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: HomeView },
     {
-      path: '/weather',
-      name: 'weather',
-      component: () => import('./views/WeatherView.vue'),
+      path: '/react',
+      name: 'react',
+      component: () => import('./views/ReactView.vue'),
     },
     {
-      path: '/wordle',
-      name: 'wordle',
-      component: () => import('./views/WordleView.vue'),
+      path: '/angular',
+      name: 'angular',
+      component: () => import('./views/AngularView.vue'),
     },
   ],
 });
