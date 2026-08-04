@@ -84,6 +84,12 @@ pnpm dev:wordle     # Angular remote (hot reload) → :5002
 pnpm build
 ```
 
+## Deployment
+
+Each app deploys as its own **Vercel project** (git-connected, one Root Directory each),
+so the micro-frontends ship independently. Full steps, env vars, and how the cross-origin
+Module Federation + iframe wiring works in production are in **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+
 ## Tech stack
 
 - **Monorepo:** pnpm workspaces

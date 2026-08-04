@@ -1,59 +1,55 @@
-# MfeWordle
+# @kobi/mfe-wordle — Angular Wordle remote
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.2.
+A **daily Wordle** micro-frontend, embedded by the [Vue shell](../shell) via **iframe**
+for full runtime/style isolation. Part of the [kobi-ai-pf](../../README.md) monorepo.
 
-## Development server
+- **Framework:** Angular 22 (standalone components + signals)
+- **Components:** Angular Material
+- **Styling:** Tailwind CSS v4 (PostCSS)
+- **Backend:** Supabase (word of the day)
+- **Port (dev):** 5002
 
-To start a local development server, run:
+## The game
 
-```bash
-ng serve
-```
+Six guesses, five-letter word. Full Wordle scoring — correct / present / absent with
+proper duplicate-letter handling ([`src/app/wordle/game.ts`](src/app/wordle/game.ts)) —
+on-screen **and** physical keyboard, win/lose states, all driven by Angular signals.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Word of the day (Supabase)
 
-## Code scaffolding
+[`WordService`](src/app/wordle/word.service.ts) fetches today's word from a Supabase
+**edge function** (`daily-word`) so every player gets the same word each day. It falls
+back to a deterministic local pick from a bundled list when offline.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Backend piece | Role |
+| --- | --- |
+| `wordle_words` table | Answer pool, RLS: public read only |
+| `get_daily_word()` SQL fn | Deterministic pick by day offset from an anchor date |
+| `daily-word` edge function | Returns `{ word, date }` as JSON, CORS-enabled |
 
-```bash
-ng generate component component-name
-```
+Config (public anon key) lives in [`src/environments/environment.ts`](src/environments/environment.ts).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Federation note
 
-```bash
-ng generate --help
-```
+The build also configures `@angular-architects/native-federation` and exposes a
+`mount(el)` contract ([`src/mount.ts`](src/mount.ts)), but the shell integrates this
+remote via **iframe** rather than the native-federation runtime (that runtime is now
+end-of-life and needs `es-module-shims`, which conflicts with Vite). The iframe gives
+hard isolation and is the second canonical MFE integration strategy in this repo.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Develop
 
 ```bash
-ng e2e
+pnpm --filter @kobi/mfe-wordle start       # ng serve → :5002
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Open http://localhost:5002 to play it standalone.
 
-## Additional Resources
+## Build & deploy
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+pnpm --filter @kobi/mfe-wordle build       # → dist/mfe-wordle/browser
+```
+
+Deployed on Vercel as a static Angular build ([vercel.json](vercel.json)). See
+[DEPLOYMENT.md](../../DEPLOYMENT.md).
