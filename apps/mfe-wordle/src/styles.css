@@ -1,0 +1,11 @@
+/* Angular Material prebuilt theme (includes CDK overlay + typography) */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+/* Tailwind v4 */
+@import 'tailwindcss';
+
+html,
+body {
+  margin: 0;
+  font-family: Inter, Roboto, 'Helvetica Neue', system-ui, sans-serif;
+}

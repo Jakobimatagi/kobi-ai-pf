@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+/* Baseline for both standalone dev and when mounted inside the Vue shell. */
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+}

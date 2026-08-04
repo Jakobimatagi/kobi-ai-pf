@@ -1,0 +1,70 @@
+<div class="mx-auto flex w-full max-w-md flex-col items-center px-4 py-6">
+  <header class="mb-4 text-center">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-800">Wordle</h2>
+    <p class="text-sm text-slate-500">
+      Daily word · Angular micro-frontend
+    </p>
+  </header>
+
+  @if (status() === 'loading') {
+    <div class="flex h-80 items-center justify-center">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <!-- Board -->
+    <div class="mb-6 grid grid-rows-6 gap-1.5">
+      @for (row of grid(); track $index) {
+        <div class="grid grid-cols-5 gap-1.5">
+          @for (cell of row; track $index) {
+            <div
+              class="flex h-14 w-14 items-center justify-center rounded-md text-2xl font-bold uppercase transition-colors duration-300"
+              [class]="tileClass(cell.status)"
+            >
+              {{ cell.letter }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (status() === 'won') {
+      <p class="mb-4 rounded-lg bg-green-100 px-4 py-2 text-center font-semibold text-green-800">
+        You got it! 🎉
+      </p>
+    } @else if (status() === 'lost') {
+      <p class="mb-4 rounded-lg bg-slate-100 px-4 py-2 text-center font-semibold text-slate-700">
+        Answer: <span class="font-mono">{{ answer() }}</span>
+      </p>
+    }
+
+    <!-- Keyboard -->
+    <div class="flex w-full flex-col items-center gap-1.5">
+      @for (row of keyboard; track $index) {
+        <div class="flex w-full justify-center gap-1.5">
+          @for (key of row; track key) {
+            <button
+              type="button"
+              (click)="onKey(key)"
+              [class]="keyClass(key)"
+              class="flex h-12 items-center justify-center rounded-md text-sm font-semibold uppercase transition-colors select-none"
+            >
+              @if (key === 'BACK') {
+                <mat-icon class="!h-5 !w-5 !text-lg">backspace</mat-icon>
+              } @else {
+                {{ key }}
+              }
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <p class="mt-5 text-xs text-slate-400">
+      @if (source() === 'supabase') {
+        Word of the day served from Supabase · {{ puzzleDate() }}
+      } @else {
+        Offline word of the day · {{ puzzleDate() }}
+      }
+    </p>
+  }
+</div>
