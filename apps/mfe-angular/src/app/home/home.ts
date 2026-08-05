@@ -5,32 +5,7 @@ import { COMPONENTS } from '../registry';
 @Component({
   selector: 'app-home',
   imports: [RouterLink],
-  template: `
-    <div class="mx-auto w-full max-w-2xl px-4 py-6">
-      <h2 class="text-2xl font-bold text-slate-800">Angular components</h2>
-      <p class="mt-1 text-sm text-slate-500">
-        Components built in the Angular micro-frontend. More on the way.
-      </p>
-
-      <div class="mt-5 grid gap-4 sm:grid-cols-2">
-        @for (c of components; track c.path) {
-          <a
-            [routerLink]="c.path"
-            class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <div class="text-3xl">{{ c.emoji }}</div>
-            <h3 class="mt-3 font-semibold text-slate-800">{{ c.label }}</h3>
-            <p class="mt-1 text-sm text-slate-500">{{ c.description }}</p>
-            <span
-              class="mt-3 inline-block text-sm font-semibold text-rose-600 group-hover:underline"
-            >
-              Open →
-            </span>
-          </a>
-        }
-      </div>
-    </div>
-  `,
+  templateUrl: './home.html',
 })
 export class Home {
   readonly components = COMPONENTS;
