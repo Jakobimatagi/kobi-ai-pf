@@ -1,5 +1,8 @@
+import { GUESS_DICTIONARY } from './dictionary';
+
 // Curated set of common 5-letter words. Used as the answer pool for the
-// local fallback and as the valid-guess dictionary.
+// local fallback. Guesses are validated against the much larger
+// GUESS_DICTIONARY in dictionary.ts, not this list.
 export const WORDS: string[] = [
   'apple', 'beach', 'bread', 'brain', 'brave', 'bring', 'brown', 'brush', 'chair', 'chalk',
   'charm', 'chase', 'cheap', 'check', 'chess', 'chest', 'chief', 'child', 'clean', 'clear',
@@ -45,6 +48,16 @@ export const WORDS: string[] = [
 
 export const WORD_SET: ReadonlySet<string> = new Set(WORDS);
 
+// A guess is accepted if it appears in the bundled accepted-guess dictionary
+// (~8.5k words) — NOT just the small answer pool above. The old behaviour
+// validated against WORDS only, so common words like "slate" or even the
+// day's actual answer (when served from Supabase) were wrongly rejected as
+// "Not in word list". GUESS_DICTIONARY is the system word list unioned with
+// WORDS, guaranteeing every possible answer is always a valid guess.
+//
+// Regenerate dictionary.ts:
+//   { grep -xE '[a-z]{5}' /usr/share/dict/words; \
+//     grep -oE "'[a-z]{5}'" words.ts | tr -d "'"; } | sort -u
 export function isValidGuess(word: string): boolean {
-  return WORD_SET.has(word.toLowerCase());
+  return GUESS_DICTIONARY.has(word.toLowerCase());
 }

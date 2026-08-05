@@ -19,10 +19,18 @@ export const COMPONENTS: MfeComponent[] = [
     loadComponent: () => import('./wordle/wordle').then((m) => m.Wordle),
   },
   {
+    path: 'board-summary',
+    label: 'Board Summary',
+    description: 'Live read-only rollup of the Kanban board, synced via Supabase Realtime.',
+    emoji: '📊',
+    loadComponent: () =>
+      import('./board-summary/board-summary').then((m) => m.BoardSummary),
+  },
+  {
     path: 'signals',
     label: 'Signals Lab',
     description:
-      'Interactive tour of Angular signals — signal, computed & effect wired to a live reactive graph.',
+      'Interactive tour of Angular signals — signal, computed & effect across three live demos.',
     emoji: '⚡',
     loadComponent: () =>
       import('./signals-lab/signals-lab').then((m) => m.SignalsLab),

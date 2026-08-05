@@ -49,7 +49,7 @@
               class="flex h-12 items-center justify-center rounded-md text-sm font-semibold uppercase transition-colors select-none"
             >
               @if (key === 'BACK') {
-                <mat-icon class="!h-5 !w-5 !text-lg">backspace</mat-icon>
+                <span class="text-lg leading-none" aria-label="Backspace">⌫</span>
               } @else {
                 {{ key }}
               }
@@ -65,6 +65,11 @@
       } @else {
         Offline word of the day · {{ puzzleDate() }}
       }
+    </p>
+
+    <p class="mt-1 max-w-xs text-center text-xs text-slate-400">
+      Guesses are checked against a bundled local dictionary, so some real
+      words may not be recognised.
     </p>
   }
 </div>

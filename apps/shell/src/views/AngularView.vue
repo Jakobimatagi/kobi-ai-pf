@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { REMOTES } from '../mfe/config';
+import { getBoardId } from '../mfe/board';
 
 const loaded = ref(false);
+
+// Pass the per-browser board id to the Angular iframe. It's a different origin,
+// so a URL param is the only channel — the Angular MFE reads ?board= on load.
+const angularSrc = `${REMOTES.angular.url}?board=${encodeURIComponent(getBoardId())}`;
 </script>
 
 <template>
@@ -23,7 +28,7 @@ const loaded = ref(false);
         <span class="animate-pulse">Loading Angular MFE…</span>
       </div>
       <iframe
-        :src="REMOTES.angular.url"
+        :src="angularSrc"
         title="Angular micro-frontend"
         class="h-[680px] w-full border-0"
         @load="loaded = true"
