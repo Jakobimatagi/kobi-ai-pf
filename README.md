@@ -17,6 +17,28 @@ component libraries (MUI for React, Angular Material for Angular).
 Each MFE keeps a component **registry** (`registry.ts`) — adding a component is one entry
 (nav link + home card + route) and requires **no changes to the shell**.
 
+## How this was built
+
+Built AI-assisted and engineer-directed. The AI wrote code quickly; the architecture,
+technical decisions, code review, and debugging were mine. The commit history is
+co-authored and left intact — the point isn't who typed each line, it's the judgment that
+made the output production-ready. A few decisions that shaped it:
+
+- **Two integration strategies, deliberately** — runtime Module Federation for React,
+  iframe isolation for Angular (the latter chosen after Angular's native-federation
+  runtime proved end-of-life and incompatible with Vite).
+- **Debugging the tooling's blind spots** — a Vite React-refresh preamble error when
+  mounting a React remote in a non-React host (fix: serve the remote as a built artifact),
+  a Tailwind v4 gradient-utility rename, and a production CORS/URL mismatch caught by
+  verifying the live deployment rather than assuming it worked.
+- **Structured to grow** — each MFE hosts many components via a registry; adding one
+  touches a single file.
+
+Standards held throughout: strict TypeScript across all three frameworks, small
+single-responsibility modules, environment-driven config (no hardcoded URLs), CI that
+type-checks and builds every app on each PR, and behaviour verified in a real browser
+before it's called done.
+
 ## Two integration strategies (on purpose)
 
 Real micro-frontend systems mix integration techniques depending on the trade-offs.

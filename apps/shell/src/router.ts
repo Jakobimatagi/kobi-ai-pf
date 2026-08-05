@@ -15,5 +15,10 @@ export const router = createRouter({
       name: 'angular',
       component: () => import('./views/AngularView.vue'),
     },
+    {
+      path: '/how-its-built',
+      name: 'how-its-built',
+      component: () => import('./views/AboutView.vue'),
+    },
   ],
 });
