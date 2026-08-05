@@ -26,4 +26,13 @@ export const COMPONENTS: MfeComponent[] = [
     loadComponent: () =>
       import('./board-summary/board-summary').then((m) => m.BoardSummary),
   },
+  {
+    path: 'signals',
+    label: 'Signals Lab',
+    description:
+      'Interactive tour of Angular signals — signal, computed & effect across three live demos.',
+    emoji: '⚡',
+    loadComponent: () =>
+      import('./signals-lab/signals-lab').then((m) => m.SignalsLab),
+  },
 ];
