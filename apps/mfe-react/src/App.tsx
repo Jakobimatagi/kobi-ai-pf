@@ -63,7 +63,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             {COMPONENTS.map((c) => (
-              <Route key={c.path} path={c.path} element={c.element} />
+              <Route key={c.path} path={c.routePath ?? c.path} element={c.element} />
             ))}
           </Routes>
         </Layout>
