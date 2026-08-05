@@ -26,8 +26,8 @@ Remote URLs are environment-driven (see [.env.example](.env.example)):
 
 | Variable | Purpose | Default (prod) |
 | --- | --- | --- |
-| `VITE_REACT_REMOTE_URL` | React MFE `remoteEntry.js` (build-time, in [vite.config.ts](vite.config.ts)) | `https://kobi-ai-pf-react.vercel.app/remoteEntry.js` |
-| `VITE_ANGULAR_URL` | Angular MFE iframe origin (runtime, in [src/mfe/config.ts](src/mfe/config.ts)) | `https://kobi-ai-pf-angular.vercel.app` |
+| `VITE_REACT_REMOTE_URL` | React MFE `remoteEntry.js` (build-time, in [vite.config.ts](vite.config.ts)) | `https://kobi-ai-pf-mfe-react.vercel.app/remoteEntry.js` |
+| `VITE_ANGULAR_URL` | Angular MFE iframe origin (runtime, in [src/mfe/config.ts](src/mfe/config.ts)) | `https://kobi-ai-pf-mfe-angular.vercel.app` |
 
 In dev both default to `localhost:5001` / `localhost:5002`.
 
