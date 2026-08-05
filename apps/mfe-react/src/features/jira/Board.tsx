@@ -21,8 +21,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { createTask, deleteTask, listTasks, updateTask, type TaskPatch } from './api';
+import { createTask, deleteTask, listTasks, seedBoard, updateTask, type TaskPatch } from './api';
 import { subscribeToTasks } from './realtime';
+import { useBoardId } from './boardId';
 import { COLUMNS, ticketKey, type Priority, type Status, type Task } from './types';
 import Column from './Column';
 import TaskCard from './TaskCard';
@@ -79,6 +80,7 @@ function TrashZone() {
 }
 
 export default function Board() {
+  const boardId = useBoardId();
   const [columns, setColumns] = useState<Columns>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -94,29 +96,44 @@ export default function Board() {
 
   const load = useCallback(async () => {
     try {
-      setColumns(group(await listTasks()));
+      setColumns(group(await listTasks(boardId)));
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load tasks.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [boardId]);
 
-  // Initial load + live sync. Any change (from this board or the Angular
-  // dashboard, another tab, another device) refetches — unless we're mid-drag.
+  // Initial load + live sync, scoped to this board. seedBoard() populates a
+  // brand-new board with demo tickets (exactly once) and returns its rows. Any
+  // change (from this board or the Angular dashboard, another tab, another
+  // device) refetches — unless we're mid-drag.
   useEffect(() => {
-    void load();
-    const unsub = subscribeToTasks(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const rows = await seedBoard(boardId);
+        if (!alive) return;
+        setColumns(group(rows));
+        setError(null);
+      } catch (e) {
+        if (alive) setError(e instanceof Error ? e.message : 'Failed to load tasks.');
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    const unsub = subscribeToTasks(boardId, () => {
       if (draggingRef.current) return;
       clearTimeout(refetchTimer.current);
       refetchTimer.current = setTimeout(() => void load(), 200);
     });
     return () => {
+      alive = false;
       clearTimeout(refetchTimer.current);
       unsub();
     };
-  }, [load]);
+  }, [boardId, load]);
 
   const findContainer = (id: string): Status | 'TRASH' | null => {
     if (id === 'TRASH') return 'TRASH';
@@ -212,7 +229,7 @@ export default function Board() {
     };
     setColumns((prev) => ({ ...prev, [status]: [...prev[status], temp] }));
     try {
-      await createTask({ title, priority, status });
+      await createTask(boardId, { title, priority, status });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not create the issue.');

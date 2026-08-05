@@ -9,15 +9,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 /**
- * Subscribe to every change on jira_tasks. Returns an unsubscribe function.
- * `onChange` fires on any insert/update/delete (from this or any other client).
+ * Subscribe to changes for a single board's tasks. Returns an unsubscribe
+ * function. `onChange` fires on any insert/update/delete on this board (from
+ * this or any other client).
  */
-export function subscribeToTasks(onChange: () => void): () => void {
+export function subscribeToTasks(boardId: string, onChange: () => void): () => void {
   const channel = supabase
-    .channel('jira_tasks_changes')
+    .channel(`jira_tasks:${boardId}`)
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'jira_tasks' },
+      {
+        event: '*',
+        schema: 'public',
+        table: 'jira_tasks',
+        filter: `board_id=eq.${boardId}`,
+      },
       () => onChange(),
     )
     .subscribe();

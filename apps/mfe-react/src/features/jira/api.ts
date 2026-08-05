@@ -16,8 +16,19 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function listTasks(): Promise<Task[]> {
-  return fetch(TASKS_API, { headers: authHeaders }).then(handle<Task[]>);
+export function listTasks(boardId: string): Promise<Task[]> {
+  const url = `${TASKS_API}?board_id=${encodeURIComponent(boardId)}`;
+  return fetch(url, { headers: authHeaders }).then(handle<Task[]>);
+}
+
+// Ensure this board exists (seeding demo tickets on first ever load), and
+// return its current tasks. Idempotent — safe to call on every mount.
+export function seedBoard(boardId: string): Promise<Task[]> {
+  return fetch(`${TASKS_API}/seed`, {
+    method: 'POST',
+    headers: { ...authHeaders, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ board_id: boardId }),
+  }).then(handle<Task[]>);
 }
 
 export interface NewTask {
@@ -27,11 +38,11 @@ export interface NewTask {
   status?: Status;
 }
 
-export function createTask(input: NewTask): Promise<Task> {
+export function createTask(boardId: string, input: NewTask): Promise<Task> {
   return fetch(TASKS_API, {
     method: 'POST',
     headers: { ...authHeaders, 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
+    body: JSON.stringify({ ...input, board_id: boardId }),
   }).then(handle<Task>);
 }
 

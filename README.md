@@ -95,6 +95,15 @@ Postgres row changes over **Supabase Realtime**. A `BroadcastChannel` or `window
 can't cross that origin boundary; a database-mediated channel does, and works across tabs
 and devices too.
 
+### 🧑‍🤝‍🧑 Per-browser boards
+Every visitor gets their own isolated board (no login). The **shell** generates a random
+`board_id`, stores it in `localStorage`, and hands it to both MFEs — to React via the
+`mount()` contract, to the Angular iframe via a `?board=` URL param (cross-origin, so the
+URL is the only channel). A brand-new board is **seeded with demo tickets exactly once**
+(guarded by a claim table, race-safe). Reads, writes, **and the realtime subscriptions**
+are all scoped by `board_id`, so one visitor's edits never touch another's — while the two
+MFEs still stay live-synced within a board.
+
 ## Backend (Supabase)
 
 | Piece | Detail |
@@ -102,8 +111,9 @@ and devices too.
 | `wordle_words` table | Answer pool (5-letter words), row-level security: public read only |
 | `get_daily_word()` | SQL function — deterministic pick by day offset from an anchor date |
 | `daily-word` edge function | Returns `{ word, date }` as JSON; CORS-enabled |
-| `jira_tasks` table | Kanban store; RLS: **anon read-only**, in the `supabase_realtime` publication |
-| `tasks` edge function | REST API (`GET/POST/PATCH/DELETE`); writes with the service role so the table stays write-locked |
+| `jira_tasks` table | Kanban store, scoped by `board_id`; RLS: **anon read-only**, in the `supabase_realtime` publication |
+| `jira_seeded_boards` table | Claim table so each board is seeded with demo tickets exactly once (RLS-locked) |
+| `tasks` edge function | REST API (`GET/POST/PATCH/DELETE` + `POST /seed`); writes with the service role so the table stays write-locked |
 
 ## Getting started
 

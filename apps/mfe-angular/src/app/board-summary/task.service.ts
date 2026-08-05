@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
+import { resolveBoardId } from '../board-id';
 
 export type Status = 'BACKLOG' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE';
 export type Priority = 'LOW' | 'MED' | 'HIGH';
@@ -30,8 +31,11 @@ export class TaskService {
     { auth: { persistSession: false } },
   );
 
+  readonly boardId = resolveBoardId();
+
   async list(): Promise<Task[]> {
-    const res = await fetch(`${environment.supabaseUrl}/functions/v1/tasks`, {
+    const url = `${environment.supabaseUrl}/functions/v1/tasks?board_id=${encodeURIComponent(this.boardId)}`;
+    const res = await fetch(url, {
       headers: {
         apikey: environment.supabaseAnonKey,
         Authorization: `Bearer ${environment.supabaseAnonKey}`,
@@ -41,13 +45,18 @@ export class TaskService {
     return (await res.json()) as Task[];
   }
 
-  /** Fire `cb` whenever any task changes. Returns an unsubscribe function. */
+  /** Fire `cb` whenever a task on this board changes. Returns an unsubscribe function. */
   onChange(cb: () => void): () => void {
     const channel = this.supabase
-      .channel('jira_dashboard')
+      .channel(`jira_dashboard:${this.boardId}`)
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'jira_tasks' },
+        {
+          event: '*',
+          schema: 'public',
+          table: 'jira_tasks',
+          filter: `board_id=eq.${this.boardId}`,
+        },
         () => cb(),
       )
       .subscribe();
