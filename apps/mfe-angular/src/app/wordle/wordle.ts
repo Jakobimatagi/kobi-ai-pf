@@ -7,7 +7,6 @@ import {
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -40,7 +39,6 @@ interface Cell {
   selector: 'app-wordle',
   imports: [
     MatButtonModule,
-    MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
   ],
@@ -159,7 +157,7 @@ export class Wordle implements OnInit {
       return;
     }
     if (!isValidGuess(guess)) {
-      this.toast('Not in word list');
+      this.toast('Not in our word list (local dictionary)');
       return;
     }
 
