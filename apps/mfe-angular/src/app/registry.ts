@@ -18,4 +18,13 @@ export const COMPONENTS: MfeComponent[] = [
     emoji: '🟩',
     loadComponent: () => import('./wordle/wordle').then((m) => m.Wordle),
   },
+  {
+    path: 'signals',
+    label: 'Signals Lab',
+    description:
+      'Interactive tour of Angular signals — signal, computed & effect wired to a live reactive graph.',
+    emoji: '⚡',
+    loadComponent: () =>
+      import('./signals-lab/signals-lab').then((m) => m.SignalsLab),
+  },
 ];
