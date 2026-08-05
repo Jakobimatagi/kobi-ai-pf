@@ -5,7 +5,11 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 // `loader` returns the remote module; we call its mount() into our container
 // and invoke the returned cleanup on unmount.
 const props = defineProps<{
-  loader: () => Promise<{ mount: (el: HTMLElement) => void | (() => void) }>;
+  loader: () => Promise<{
+    mount: (el: HTMLElement, ctx?: Record<string, unknown>) => void | (() => void);
+  }>;
+  // Optional context handed to the remote's mount() (e.g. the board id).
+  options?: Record<string, unknown>;
 }>();
 
 const container = ref<HTMLElement | null>(null);
@@ -17,7 +21,7 @@ onMounted(async () => {
   try {
     const mod = await props.loader();
     if (!container.value) return;
-    cleanup = mod.mount(container.value);
+    cleanup = mod.mount(container.value, props.options);
     status.value = 'ready';
   } catch (err) {
     status.value = 'error';

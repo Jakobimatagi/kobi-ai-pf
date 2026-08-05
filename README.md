@@ -31,6 +31,11 @@ made the output production-ready. A few decisions that shaped it:
   mounting a React remote in a non-React host (fix: serve the remote as a built artifact),
   a Tailwind v4 gradient-utility rename, and a production CORS/URL mismatch caught by
   verifying the live deployment rather than assuming it worked.
+- **Cross-origin state sync, done right** — the obvious `BroadcastChannel`/`window`-event
+  approach silently fails across the React↔Angular origin boundary. Chose **Supabase
+  Realtime** (a database-mediated channel) instead, which also gets cross-tab and
+  cross-device sync for free — and kept writes behind a service-role edge function so the
+  public table stays read-only.
 - **Structured to grow** — each MFE hosts many components via a registry; adding one
   touches a single file.
 
@@ -58,7 +63,15 @@ Each MFE also runs **standalone** at its own port for independent development.
 ### ⚛️ React MFE — Weather
 A 7-day forecast that hits the free [Open-Meteo](https://open-meteo.com) API (no key
 required): city autocomplete + quick-pick chips, current conditions, and a daily grid.
-Built with MUI components on a Tailwind layout. *(More React components to come.)*
+Built with MUI components on a Tailwind layout.
+
+### ⚛️ React MFE — Project Board
+A full-CRUD Kanban board. Four status columns (Backlog / In Progress / In Review / Done),
+inline **+ Add issue** forms, click-to-edit modal, and **drag-and-drop** (via `@dnd-kit`)
+with **optimistic updates** so moves feel instant. A dedicated trash drop-zone opens a
+deletion-confirmation modal. Every write goes through a **REST edge function**
+(`GET/POST/PATCH/DELETE /tasks`); the board reads the same API and subscribes to
+**Supabase Realtime** so it stays live. *(More React components to come.)*
 
 ### 🅰️ Angular MFE — Wordle
 A daily Wordle clone. The **word of the day** is served deterministically from a
@@ -66,7 +79,30 @@ A daily Wordle clone. The **word of the day** is served deterministically from a
 every player gets the same word each day. Falls back to a deterministic local word list
 when offline. Full guess evaluation (correct / present / absent with duplicate handling),
 on-screen + physical keyboard, built with Angular Material + Tailwind and Angular signals.
+
+### 🅰️ Angular MFE — Board Summary
+A **read-only executive dashboard** over the same board data: totals, a per-status
+breakdown, a completion bar, a priority split, and a live activity feed. Dragging and
+editing are deliberately absent — it's a permissioned "viewer" role. It never talks to the
+React board directly; it subscribes to **Supabase Realtime** independently.
 *(More Angular components to come.)*
+
+### 🔄 The "wow": two frameworks, one live board
+The React board (Module Federation, inline) and the Angular dashboard (iframe, a **separate
+origin**) share no code and no runtime. Create, drag, or delete an issue on the board and
+the Angular dashboard's numbers update within a heartbeat — because both apps subscribe to
+Postgres row changes over **Supabase Realtime**. A `BroadcastChannel` or `window` event
+can't cross that origin boundary; a database-mediated channel does, and works across tabs
+and devices too.
+
+### 🧑‍🤝‍🧑 Per-browser boards
+Every visitor gets their own isolated board (no login). The **shell** generates a random
+`board_id`, stores it in `localStorage`, and hands it to both MFEs — to React via the
+`mount()` contract, to the Angular iframe via a `?board=` URL param (cross-origin, so the
+URL is the only channel). A brand-new board is **seeded with demo tickets exactly once**
+(guarded by a claim table, race-safe). Reads, writes, **and the realtime subscriptions**
+are all scoped by `board_id`, so one visitor's edits never touch another's — while the two
+MFEs still stay live-synced within a board.
 
 ## Backend (Supabase)
 
@@ -75,6 +111,9 @@ on-screen + physical keyboard, built with Angular Material + Tailwind and Angula
 | `wordle_words` table | Answer pool (5-letter words), row-level security: public read only |
 | `get_daily_word()` | SQL function — deterministic pick by day offset from an anchor date |
 | `daily-word` edge function | Returns `{ word, date }` as JSON; CORS-enabled |
+| `jira_tasks` table | Kanban store, scoped by `board_id`; RLS: **anon read-only**, in the `supabase_realtime` publication |
+| `jira_seeded_boards` table | Claim table so each board is seeded with demo tickets exactly once (RLS-locked) |
+| `tasks` edge function | REST API (`GET/POST/PATCH/DELETE` + `POST /seed`); writes with the service role so the table stays write-locked |
 
 ## Getting started
 
@@ -121,10 +160,10 @@ Module Federation + iframe wiring works in production are in **[DEPLOYMENT.md](D
 
 - **Monorepo:** pnpm workspaces
 - **Shell:** Vue 3.5, Vue Router, Vite 8, `@module-federation/vite`
-- **React MFE:** React 19, React Router, MUI 9, Vite 8, `@module-federation/vite`, `vite-plugin-css-injected-by-js`
+- **React MFE:** React 19, React Router, MUI 9, `@dnd-kit`, Vite 8, `@module-federation/vite`, `vite-plugin-css-injected-by-js`
 - **Angular MFE:** Angular 22 (standalone + signals + Router), Angular Material, `@angular-architects/native-federation`
 - **Styling:** Tailwind CSS v4 (all apps)
-- **Backend:** Supabase (Postgres, RLS, Edge Functions)
+- **Backend:** Supabase (Postgres, RLS, Edge Functions, **Realtime**), `@supabase/supabase-js`
 - **Language:** TypeScript everywhere
 
 ## Repository layout

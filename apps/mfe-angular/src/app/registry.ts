@@ -18,4 +18,12 @@ export const COMPONENTS: MfeComponent[] = [
     emoji: '🟩',
     loadComponent: () => import('./wordle/wordle').then((m) => m.Wordle),
   },
+  {
+    path: 'board-summary',
+    label: 'Board Summary',
+    description: 'Live read-only rollup of the Kanban board, synced via Supabase Realtime.',
+    emoji: '📊',
+    loadComponent: () =>
+      import('./board-summary/board-summary').then((m) => m.BoardSummary),
+  },
 ];
