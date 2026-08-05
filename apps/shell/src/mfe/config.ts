@@ -16,6 +16,8 @@ export const REMOTES = {
     // Iframe-embedded remote (Angular) — isolated runtime + styles.
     url:
       (import.meta.env.VITE_ANGULAR_URL as string | undefined) ??
-      (isDev ? 'http://localhost:5002' : 'https://kobi-ai-pf-angular.vercel.app'),
+      (isDev
+        ? 'http://localhost:5002'
+        : 'https://kobi-ai-pf-mfe-angular.vercel.app'),
   },
 } as const;

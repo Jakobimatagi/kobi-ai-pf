@@ -14,29 +14,29 @@ For each app, create a Vercel project from the same repo:
 ### 1. React MFE
 
 - **Import** `Jakobimatagi/kobi-ai-pf` in the Vercel dashboard → **Add New… → Project**.
-- **Project Name:** `kobi-ai-pf-react`
+- **Project Name:** `kobi-ai-pf-mfe-react`
 - **Root Directory:** `apps/mfe-react`
 - Framework / build / output are read from `apps/mfe-react/vercel.json` (Vite → `dist`).
-- Deploy. Note the production URL, e.g. `https://kobi-ai-pf-react.vercel.app`.
+- Deploy. Note the production URL, e.g. `https://kobi-ai-pf-mfe-react.vercel.app`.
 
 ### 2. Angular MFE
 
 - **Add New… → Project**, same repo.
-- **Project Name:** `kobi-ai-pf-angular`
+- **Project Name:** `kobi-ai-pf-mfe-angular`
 - **Root Directory:** `apps/mfe-angular`
 - Config from `apps/mfe-angular/vercel.json` (Angular → `dist/mfe-angular/browser`).
-- Deploy. Note the URL, e.g. `https://kobi-ai-pf-angular.vercel.app`.
+- Deploy. Note the URL, e.g. `https://kobi-ai-pf-mfe-angular.vercel.app`.
 
 ### 3. Shell (Vue host)
 
 - **Add New… → Project**, same repo.
-- **Project Name:** `kobi-ai-pf`
+- **Project Name:** `kobi-ai-pf-shell`
 - **Root Directory:** `apps/shell`
 - **Environment Variables** (Production + Preview) — set these to the URLs from steps 1 & 2:
   | Name | Value |
   | --- | --- |
-  | `VITE_REACT_REMOTE_URL` | `https://kobi-ai-pf-react.vercel.app/remoteEntry.js` |
-  | `VITE_ANGULAR_URL` | `https://kobi-ai-pf-angular.vercel.app` |
+  | `VITE_REACT_REMOTE_URL` | `https://kobi-ai-pf-mfe-react.vercel.app/remoteEntry.js` |
+  | `VITE_ANGULAR_URL` | `https://kobi-ai-pf-mfe-angular.vercel.app` |
 - Deploy. This is the public portfolio URL.
 
 > The shell already ships with those exact URLs as **defaults** (see
@@ -60,8 +60,8 @@ vercel --cwd apps/mfe-angular --prod
 
 # Shell — pass the remote URLs from the two deploys above
 vercel --cwd apps/shell --prod \
-  -e VITE_REACT_REMOTE_URL=https://kobi-ai-pf-react.vercel.app/remoteEntry.js \
-  -e VITE_ANGULAR_URL=https://kobi-ai-pf-angular.vercel.app
+  -e VITE_REACT_REMOTE_URL=https://kobi-ai-pf-mfe-react.vercel.app/remoteEntry.js \
+  -e VITE_ANGULAR_URL=https://kobi-ai-pf-mfe-angular.vercel.app
 ```
 
 ## How the cross-app wiring works in production

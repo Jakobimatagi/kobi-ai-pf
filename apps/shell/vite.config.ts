@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { federation } from '@module-federation/vite';
 
 // Production URLs of the deployed remotes (override with env vars).
-const DEFAULT_REACT_REMOTE = 'https://kobi-ai-pf-react.vercel.app/remoteEntry.js';
+const DEFAULT_REACT_REMOTE =
+  'https://kobi-ai-pf-mfe-react.vercel.app/remoteEntry.js';
 const DEV_REACT_REMOTE = 'http://localhost:5001/remoteEntry.js';
 
 // Vue "shell" — the Module Federation host.
