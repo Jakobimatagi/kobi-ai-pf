@@ -157,7 +157,7 @@ export class Wordle implements OnInit {
       return;
     }
     if (!isValidGuess(guess)) {
-      this.toast('Not in word list');
+      this.toast('Not in our word list (local dictionary)');
       return;
     }
 
